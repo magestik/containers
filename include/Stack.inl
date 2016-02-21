@@ -23,7 +23,7 @@
  * Default constructor
  */
 template<typename T, class Allocator>
-inline Array<T, Allocator>::Array(void) : m_allocator(), m_count(0)
+inline Stack<T, Allocator>::Stack(void) : m_allocator(), m_count(0)
 {
 	// ...
 }
@@ -32,7 +32,7 @@ inline Array<T, Allocator>::Array(void) : m_allocator(), m_count(0)
  * Pointer-copy constructor
  */
 template<typename T, class Allocator>
-inline Array<T, Allocator>::Array(T * data, unsigned int size) : m_allocator(data, size), m_count(size)
+inline Stack<T, Allocator>::Stack(T * data, unsigned int size) : m_allocator(data, size), m_count(size)
 {
 	ASSERT(nullptr != data, "data is null");
 }
@@ -41,7 +41,7 @@ inline Array<T, Allocator>::Array(T * data, unsigned int size) : m_allocator(dat
  * Destructor
  */
 template<typename T, class Allocator>
-inline Array<T, Allocator>::~Array(void)
+inline Stack<T, Allocator>::~Stack(void)
 {
 	// ...
 }
@@ -50,7 +50,7 @@ inline Array<T, Allocator>::~Array(void)
  * Add an element on the top
  */
 template<typename T, class Allocator>
-inline void Array<T, Allocator>::add(const T & elmt)
+inline void Stack<T, Allocator>::push(const T & elmt)
 {
 	unsigned int count = m_count++;
 	bool result = m_allocator.require(m_count * sizeof(T));
@@ -59,30 +59,40 @@ inline void Array<T, Allocator>::add(const T & elmt)
 }
 
 /**
- * Access any element
+ * Remove the top element
  */
 template<typename T, class Allocator>
-inline const T & Array<T, Allocator>::operator [] (unsigned int n) const
+inline void Stack<T, Allocator>::pop(void)
 {
-	ASSERT(n < m_count, "index out of bounds");
-	return(m_allocator.data() + n);
+	ASSERT(m_count > 0, "the stack is already empty");
+	--m_count;
 }
 
 /**
- * Access any element
+ * Access the top element
  */
 template<typename T, class Allocator>
-inline T & Array<T, Allocator>::operator [] (unsigned int n)
+inline const T & Stack<T, Allocator>::top(void) const
 {
-	ASSERT(n < m_count, "index out of bounds");
-	return(m_allocator.data() + n);
+	ASSERT(m_count > 0, "the stack is empty");
+	return (m_allocator.data())[m_count-1];
+}
+
+/**
+ * Access the top element
+ */
+template<typename T, class Allocator>
+inline T & Stack<T, Allocator>::top(void)
+{
+	ASSERT(m_count > 0, "the stack is empty");
+	return ((T*)m_allocator.data())[m_count-1];
 }
 
 /**
  * Test whether the container is empty
  */
 template<typename T, class Allocator>
-inline bool Array<T, Allocator>::empty(void) const
+inline bool Stack<T, Allocator>::empty(void) const
 {
 	return(0 == m_count);
 }
@@ -91,17 +101,7 @@ inline bool Array<T, Allocator>::empty(void) const
  * Return the number of element
  */
 template<typename T, class Allocator>
-inline unsigned int Array<T, Allocator>::count(void) const
+inline unsigned int Stack<T, Allocator>::count(void) const
 {
 	return(m_count);
-}
-
-/**
- * Remove all elements
- */
-template<typename T, class Allocator>
-inline void Array<T, Allocator>::clear(void)
-{
-	m_count = 0;
-	m_allocator.clear();
 }

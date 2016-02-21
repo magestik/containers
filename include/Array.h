@@ -15,56 +15,52 @@
 
 #pragma once
 
-template<typename T>
+template<typename T, class Allocator>
 class Array
 {
 
 public:
 
-    typedef T type;
+	typedef T type;
 
-    struct iterator
-    {
-        explicit        iterator        (T * first) : current(first) { /* ... */ }
-        T &				operator *		(void) { return *current; }
-        iterator		operator ++		(void) { return iterator(current++); }
-        bool			operator !=		(const iterator & it) { return(current != it.current); }
+	struct iterator
+	{
+		explicit        iterator        (T * first) : current(first) { /* ... */ }
+		T &				operator *		(void) { return *current; }
+		iterator		operator ++		(void) { return iterator(current++); }
+		bool			operator !=		(const iterator & it) { return(current != it.current); }
 
-    private:
-        T * current;
-    };
+	private:
+		T * current;
+	};
 
-    // Constructors / Destructor
-                Array   (void);
-    explicit    Array   (T * data, unsigned int size);
-                ~Array  (void);
+	// Constructors / Destructor
+				Array   (void);
+	explicit    Array   (T * data, unsigned int size);
+				~Array  (void);
 
-    // Add methods
-    void            add             (const T & elmt);
+	// Add methods
+	void            add             (const T & elmt);
 
-    // Element accessors
-    T &				operator []		(unsigned int index);
-    const T &		operator []		(unsigned int index) const;
+	// Element accessors
+	T &				operator []		(unsigned int index);
+	const T &		operator []		(unsigned int index) const;
 
-    // Remove methods
-    void            clear           (void);
+	// Remove methods
+	void            clear           (void);
 
-    // Reserve
-    void            reserve         (unsigned int count);
+	// Size accessors
+	bool			empty			(void) const;
+	unsigned int	count			(void) const;
 
-    // Size accessors
-    bool			empty			(void) const;
-    unsigned int	count			(void) const;
-
-    // Iterators access
-    iterator		begin			(void) { return iterator(m_pData); }
-    iterator		end				(void) { return iterator(m_pData+m_count); }
+	// Iterators access
+	iterator		begin			(void) { return iterator((T*)m_allocator.data()); }
+	iterator		end				(void) { return iterator((T*)m_allocator.data()+m_count); }
 
 private:
 
-    T *				m_pData;	// elements
+	Allocator		m_allocator;
 	unsigned int	m_count;	// number of element
-	unsigned int	m_size;		// capacity
 
 };
 

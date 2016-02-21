@@ -13,8 +13,10 @@
  * License along with this library.
  */
 
+#pragma once
+
 #ifndef ASSERT
-#define ASSERT(exp)
+#	define ASSERT(exp, msg)
 #endif // ASSERT
 
 /**
@@ -23,7 +25,7 @@
 template<typename T>
 inline List<T>::List(void) : m_pFirst(nullptr), m_pLast(nullptr), m_count(0)
 {
-    /* ... */
+	// ...
 }
 
 /**
@@ -32,7 +34,7 @@ inline List<T>::List(void) : m_pFirst(nullptr), m_pLast(nullptr), m_count(0)
 template<typename T>
 inline List<T>::List(const List<T> & list) : m_pFirst(nullptr), m_pLast(nullptr), m_count(0)
 {
-    m_count = _copyList(list, &m_pFirst, &m_pLast);
+	m_count = _copyList(list, &m_pFirst, &m_pLast);
 }
 
 /**
@@ -41,7 +43,7 @@ inline List<T>::List(const List<T> & list) : m_pFirst(nullptr), m_pLast(nullptr)
 template<typename T>
 inline List<T>::~List(void)
 {
-    clear();
+	clear();
 }
 
 /**
@@ -50,9 +52,9 @@ inline List<T>::~List(void)
 template<typename T>
 List<T> & List<T>::operator = (const List<T> & list)
 {
-    clear();
-    m_count = _copyList(list, &m_pFirst, &m_pLast);
-    return(*this);
+	clear();
+	m_count = _copyList(list, &m_pFirst, &m_pLast);
+	return(*this);
 }
 
 /**
@@ -61,17 +63,17 @@ List<T> & List<T>::operator = (const List<T> & list)
 template<typename T>
 inline void List<T>::insertAtHead(const T & elmt)
 {
-    if (0 == m_count)
-    {
-        _addFirst(elmt);
-        return;
-    }
+	if (0 == m_count)
+	{
+		_addFirst(elmt);
+		return;
+	}
 
-    sNode * pNode = new sNode(elmt);
-    pNode->next = m_pFirst; // create link to next element
-    m_pFirst = pNode;
+	sNode * pNode = new sNode(elmt);
+	pNode->next = m_pFirst; // create link to next element
+	m_pFirst = pNode;
 
-    ++m_count;
+	++m_count;
 }
 
 /**
@@ -80,17 +82,17 @@ inline void List<T>::insertAtHead(const T & elmt)
 template<typename T>
 inline void List<T>::insertAtTail(const T & elmt)
 {
-    if (0 == m_count)
-    {
-        _addFirst(elmt);
-        return;
-    }
+	if (0 == m_count)
+	{
+		_addFirst(elmt);
+		return;
+	}
 
-    sNode * pNode = new sNode(elmt);
-    m_pLast->next = pNode; // create link from previous element
-    m_pLast = pNode;
+	sNode * pNode = new sNode(elmt);
+	m_pLast->next = pNode; // create link from previous element
+	m_pLast = pNode;
 
-    ++m_count;
+	++m_count;
 }
 
 /**
@@ -101,34 +103,34 @@ inline void List<T>::insertAtTail(const T & elmt)
 template<typename T>
 inline void List<T>::insertAtIndex(const T & elmt, unsigned int index)
 {
-    ASSERT(m_count >= index);
+	ASSERT(m_count >= index, "index out of bounds");
 
-    if (0 == m_count)
-    {
-        _addFirst(elmt);
-        return;
-    }
+	if (0 == m_count)
+	{
+		_addFirst(elmt);
+		return;
+	}
 
-    if (0 == index)
-    {
-        insertAtHead(elmt);
-        return;
-    }
+	if (0 == index)
+	{
+		insertAtHead(elmt);
+		return;
+	}
 
-    if (m_count == (index + 1))
-    {
-        insertAtTail(elmt);
-        return;
-    }
+	if (m_count == (index + 1))
+	{
+		insertAtTail(elmt);
+		return;
+	}
 
-    sNode * pPreviousNode = _access(index - 1);
+	sNode * pPreviousNode = _access(index - 1);
 
-    sNode * pNode = new sNode(elmt);
+	sNode * pNode = new sNode(elmt);
 
-    pNode->next = pPreviousNode->next; // create link to next element
-    pPreviousNode->next = pNode; // create link from previous element
+	pNode->next = pPreviousNode->next; // create link to next element
+	pPreviousNode->next = pNode; // create link from previous element
 
-    ++m_count;
+	++m_count;
 }
 
 /**
@@ -137,19 +139,19 @@ inline void List<T>::insertAtIndex(const T & elmt, unsigned int index)
 template<typename T>
 inline void List<T>::removeFromHead(void)
 {
-    ASSERT(m_count > 0);
+	ASSERT(m_count > 0, "the list is already empty");
 
-    if (1 == m_count)
-    {
-        _removeLast();
-        return;
-    }
+	if (1 == m_count)
+	{
+		_removeLast();
+		return;
+	}
 
-    sNode * pNodeToDelete = m_pFirst;
-    m_pFirst = pNodeToDelete->next;
-    delete pNodeToDelete;
+	sNode * pNodeToDelete = m_pFirst;
+	m_pFirst = pNodeToDelete->next;
+	delete pNodeToDelete;
 
-    --m_count;
+	--m_count;
 }
 
 /**
@@ -158,20 +160,20 @@ inline void List<T>::removeFromHead(void)
 template<typename T>
 inline void List<T>::removeFromTail(void)
 {
-    ASSERT(m_count > 0);
+	ASSERT(m_count > 0, "the list is already empty");
 
-    if (1 == m_count)
-    {
-        _removeLast();
-        return;
-    }
+	if (1 == m_count)
+	{
+		_removeLast();
+		return;
+	}
 
-    sNode * pNodeToDelete = m_pLast;
-    m_pLast = _access(m_count - 2); // get last-but-one element
-    m_pLast->next = nullptr;
-    delete pNodeToDelete;
+	sNode * pNodeToDelete = m_pLast;
+	m_pLast = _access(m_count - 2); // get last-but-one element
+	m_pLast->next = nullptr;
+	delete pNodeToDelete;
 
-    --m_count;
+	--m_count;
 }
 
 /**
@@ -182,33 +184,33 @@ inline void List<T>::removeFromTail(void)
 template<typename T>
 inline void List<T>::removeFromIndex(unsigned int index)
 {
-    ASSERT(m_count > index);
+	ASSERT(m_count > index, "the list is already empty");
 
-    if (1 == m_count)
-    {
-        _removeLast();
-        return;
-    }
+	if (1 == m_count)
+	{
+		_removeLast();
+		return;
+	}
 
-    if (0 == index)
-    {
-        removeFromHead();
-        return;
-    }
+	if (0 == index)
+	{
+		removeFromHead();
+		return;
+	}
 
-    if (m_count == (index + 1))
-    {
-        removeFromTail();
-        return;
-    }
+	if (m_count == (index + 1))
+	{
+		removeFromTail();
+		return;
+	}
 
-    sNode * pPreviousNode = _access(index - 1);
+	sNode * pPreviousNode = _access(index - 1);
 
-    sNode * pNodeToDelete = pPreviousNode->next;
-    pPreviousNode->next = pNodeToDelete->next;
-    delete pNodeToDelete;
+	sNode * pNodeToDelete = pPreviousNode->next;
+	pPreviousNode->next = pNodeToDelete->next;
+	delete pNodeToDelete;
 
-    --m_count;
+	--m_count;
 }
 
 /**
@@ -217,10 +219,10 @@ inline void List<T>::removeFromIndex(unsigned int index)
 template<typename T>
 inline void List<T>::clear(void)
 {
-    while (!empty())
-    {
-        removeFromHead();
-    }
+	while (!empty())
+	{
+		removeFromHead();
+	}
 }
 
 /**
@@ -229,17 +231,17 @@ inline void List<T>::clear(void)
 template<typename T>
 inline void List<T>::appendToHead(const List<T> & list)
 {
-    if (list.m_count > 0)
-    {
-        sNode * pFirstNode	= nullptr;
-        sNode * pLastNode	= nullptr;
+	if (list.m_count > 0)
+	{
+		sNode * pFirstNode	= nullptr;
+		sNode * pLastNode	= nullptr;
 
-        m_count += _copyList(list, &pFirstNode, &pLastNode);
+		m_count += _copyList(list, &pFirstNode, &pLastNode);
 
-        pLastNode->next = m_pFirst; // make the link
+		pLastNode->next = m_pFirst; // make the link
 
-        m_pFirst = pFirstNode; // set the new "first"
-    }
+		m_pFirst = pFirstNode; // set the new "first"
+	}
 }
 
 /**
@@ -248,17 +250,17 @@ inline void List<T>::appendToHead(const List<T> & list)
 template<typename T>
 inline void List<T>::appendToTail(const List<T> & list)
 {
-    if (list.m_count > 0)
-    {
-        sNode * pFirstNode	= nullptr;
-        sNode * pLastNode	= nullptr;
+	if (list.m_count > 0)
+	{
+		sNode * pFirstNode	= nullptr;
+		sNode * pLastNode	= nullptr;
 
-        m_count += _copyList(list, &pFirstNode, &pLastNode);
+		m_count += _copyList(list, &pFirstNode, &pLastNode);
 
-        m_pLast->next = pFirstNode; // make the link
+		m_pLast->next = pFirstNode; // make the link
 
-        m_pLast = pLastNode; // set the new "last"
-    }
+		m_pLast = pLastNode; // set the new "last"
+	}
 }
 
 /**
@@ -267,7 +269,7 @@ inline void List<T>::appendToTail(const List<T> & list)
 template<typename T>
 inline bool List<T>::empty(void) const
 {
-    return(0 == m_count);
+	return(0 == m_count);
 }
 
 /**
@@ -276,7 +278,7 @@ inline bool List<T>::empty(void) const
 template<typename T>
 inline unsigned int List<T>::count(void) const
 {
-    return(m_count);
+	return(m_count);
 }
 
 /**
@@ -285,7 +287,7 @@ inline unsigned int List<T>::count(void) const
 template<typename T>
 inline T & List<T>::head(void)
 {
-    return(m_pFirst->data);
+	return(m_pFirst->data);
 }
 
 /**
@@ -294,7 +296,7 @@ inline T & List<T>::head(void)
 template<typename T>
 inline const T & List<T>::head(void) const
 {
-    return(m_pFirst->data);
+	return(m_pFirst->data);
 }
 
 /**
@@ -303,7 +305,7 @@ inline const T & List<T>::head(void) const
 template<typename T>
 inline T & List<T>::tail(void)
 {
-    return(m_pLast->data);
+	return(m_pLast->data);
 }
 
 /**
@@ -312,7 +314,7 @@ inline T & List<T>::tail(void)
 template<typename T>
 inline const T & List<T>::tail(void) const
 {
-    return(m_pLast->data);
+	return(m_pLast->data);
 }
 
 /**
@@ -322,11 +324,11 @@ inline const T & List<T>::tail(void) const
 template<typename T>
 inline T & List<T>::operator [] (unsigned int index)
 {
-    ASSERT(m_count > index);
+	ASSERT(m_count > index, "index out of bounds");
 
-    sNode * pNode = _access(index);
+	sNode * pNode = _access(index);
 
-    return(pNode->data);
+	return(pNode->data);
 }
 
 /**
@@ -336,11 +338,11 @@ inline T & List<T>::operator [] (unsigned int index)
 template<typename T>
 inline const T & List<T>::operator [] (unsigned int index) const
 {
-    ASSERT(m_count > index);
+	ASSERT(m_count > index, "index out of bounds");
 
-    sNode * pNode = _access(index);
+	sNode * pNode = _access(index);
 
-    return(pNode->data);
+	return(pNode->data);
 }
 
 /**
@@ -349,15 +351,15 @@ inline const T & List<T>::operator [] (unsigned int index) const
 template<typename T>
 inline typename List<T>::sNode * List<T>::_access(unsigned int index) const
 {
-    sNode * pNode = m_pFirst;
+	sNode * pNode = m_pFirst;
 
-    while (0 != index)
-    {
-        pNode = pNode->next;
-        --index;
-    }
+	while (0 != index)
+	{
+		pNode = pNode->next;
+		--index;
+	}
 
-    return(pNode);
+	return(pNode);
 }
 
 /**
@@ -366,14 +368,14 @@ inline typename List<T>::sNode * List<T>::_access(unsigned int index) const
 template<typename T>
 inline void List<T>::_addFirst(const T & elmt)
 {
-    ASSERT(0 == m_count);
+	ASSERT(0 == m_count, "the list is not empty");
 
-    sNode * pNode = new sNode(elmt);
+	sNode * pNode = new sNode(elmt);
 
-    m_pFirst = pNode;
-    m_pLast	 = pNode;
+	m_pFirst = pNode;
+	m_pLast	 = pNode;
 
-    m_count  = 1;
+	m_count  = 1;
 }
 
 /**
@@ -382,14 +384,14 @@ inline void List<T>::_addFirst(const T & elmt)
 template<typename T>
 inline void List<T>::_removeLast(void)
 {
-    ASSERT(1 == m_count);
+	ASSERT(1 == m_count, "the list has more than one element");
 
-    delete m_pFirst;
+	delete m_pFirst;
 
-    m_pFirst = nullptr;
-    m_pLast	 = nullptr;
+	m_pFirst = nullptr;
+	m_pLast	 = nullptr;
 
-    m_count  = 0;
+	m_count  = 0;
 }
 
 /**
@@ -398,29 +400,29 @@ inline void List<T>::_removeLast(void)
 template<typename T>
 inline unsigned int List<T>::_copyList(const List<T> & list, sNode ** pFirst, sNode ** pLast)
 {
-    ASSERT(0 < list.m_count);
+	ASSERT(0 < list.m_count, "the list is empty");
 
-    sNode * pSourceNode = list.m_pFirst;
+	sNode * pSourceNode = list.m_pFirst;
 
-    *pFirst = new sNode(pSourceNode->data);
-    *pLast = *pFirst;
+	*pFirst = new sNode(pSourceNode->data);
+	*pLast = *pFirst;
 
-    pSourceNode = pSourceNode->next;
+	pSourceNode = pSourceNode->next;
 
-    for (int i = 1; i < list.m_count; ++i)
-    {
-        // allocate new node
-        sNode * pNode = new sNode(pSourceNode->data);
+	for (int i = 1; i < list.m_count; ++i)
+	{
+		// allocate new node
+		sNode * pNode = new sNode(pSourceNode->data);
 
-        // set the "next" member of the last allocated node
-        (*pLast)->next = pNode;
+		// set the "next" member of the last allocated node
+		(*pLast)->next = pNode;
 
-        // set pLast to the newly allocated node
-        *pLast = pNode;
+		// set pLast to the newly allocated node
+		*pLast = pNode;
 
-        // iterate to the next element of the list to be copied
-        pSourceNode = pSourceNode->next;
-    }
+		// iterate to the next element of the list to be copied
+		pSourceNode = pSourceNode->next;
+	}
 
-    return(list.m_count);
+	return(list.m_count);
 }

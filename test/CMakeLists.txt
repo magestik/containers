@@ -4,6 +4,8 @@ project(test)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
+
 include_directories(../include/)
 
 file(GLOB_RECURSE HEADERS ../include/*.h ../include/*.inl)
