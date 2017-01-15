@@ -47,6 +47,7 @@ inline Queue<T>::~Queue(void)
 /**
  * Assigment operator from List
  */
+template<typename T>
 Queue<T> & Queue<T>::operator =	(const List<T> & list)
 {
 	m_container = list;
