@@ -15,6 +15,7 @@ class BinarySearchTree
 
 public:
 
+	typedef T type;
 
 	// Constructors / Destructor
 	BinarySearchTree(void);

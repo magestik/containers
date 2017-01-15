@@ -41,7 +41,7 @@ inline BinarySearchTree<T>::~BinarySearchTree(void)
 template<typename T>
 inline bool BinarySearchTree<T>::empty(void)
 {
-	return (nullptr == m_pRoot);
+	return(nullptr == m_pRoot);
 }
 
 /**
@@ -66,19 +66,19 @@ inline bool BinarySearchTree<T>::_insert(sNode ** pNode, const T & p)
 	}
 	else
 	{
-		int comparaison = compare(p, (*pNode)->data);
+		int result = compare(p, (*pNode)->data);
 
-		if (comparaison == 0)
-		{
-			return(false);
-		}
-		else if (comparaison == 1)
+		if (result > 0)
 		{
 			return(_insert(&((*pNode)->right), p));
 		}
-		else
+		else if (result < 0)
 		{
 			return(_insert(&((*pNode)->left), p));
+		}
+		else
+		{
+			return(false);
 		}
 	}
 }
