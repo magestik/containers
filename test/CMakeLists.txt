@@ -12,7 +12,7 @@ file(GLOB_RECURSE HEADERS ../include/*.h ../include/*.inl)
 
 add_executable(simple_test test.cpp ${HEADERS})
 
-target_include_directories(simple_test PRIVATE ../include/)
+target_link_libraries(simple_test PRIVATE containers)
 
 set_property(TARGET simple_test PROPERTY CXX_STANDARD 11)
 
