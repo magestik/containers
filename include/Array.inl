@@ -65,7 +65,7 @@ template<typename T, class Allocator>
 inline const T & Array<T, Allocator>::operator [] (unsigned int n) const
 {
 	ASSERT(n < m_count, "index out of bounds");
-	return(m_allocator.data() + n);
+	return(((T*)m_allocator.data())[n]);
 }
 
 /**
@@ -75,7 +75,7 @@ template<typename T, class Allocator>
 inline T & Array<T, Allocator>::operator [] (unsigned int n)
 {
 	ASSERT(n < m_count, "index out of bounds");
-	return(m_allocator.data() + n);
+	return(((T*)m_allocator.data())[n]);
 }
 
 /**
