@@ -42,6 +42,11 @@ public:
 	// Add methods
 	void            add             (const T & elmt);
 
+	// Remove methods
+	void            removeFirstElement		(void);
+	void            removeLastElement		(void);
+	void            removeElementAtIndex	(unsigned int index);
+
 	// Element accessors
 	T &				operator []		(unsigned int index);
 	const T &		operator []		(unsigned int index) const;

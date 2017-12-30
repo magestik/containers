@@ -47,7 +47,7 @@ inline Array<T, Allocator>::~Array(void)
 }
 
 /**
- * Add an element on the top
+ * Add an element at the end
  */
 template<typename T, class Allocator>
 inline void Array<T, Allocator>::add(const T & elmt)
@@ -56,6 +56,36 @@ inline void Array<T, Allocator>::add(const T & elmt)
 	bool result = m_allocator.require(m_count * sizeof(T));
 	ASSERT(result, "allocation failed");
 	((T*)m_allocator.data())[count] = elmt;
+}
+
+template<typename T, class Allocator>
+inline void Array<T, Allocator>::removeFirstElement(void)
+{
+	removeElementAtIndex(0);
+}
+
+template<typename T, class Allocator>
+inline void Array<T, Allocator>::removeLastElement(void)
+{
+	removeElementAtIndex(m_count);
+}
+
+/**
+ * Remove element located at index
+ */
+template<typename T, class Allocator>
+inline void Array<T, Allocator>::removeElementAtIndex(unsigned int n)
+{
+	ASSERT(m_count > 0, "the array is empty");
+	ASSERT(n < m_count, "index out of bounds");
+	unsigned int count = --m_count;
+	bool result = m_allocator.require(m_count * sizeof(T));
+	ASSERT(result, "allocation failed");
+	~(((T*)m_allocator.data())[n]);
+	for (int i = n; i < count; ++i)
+	{
+		((T*)m_allocator.data())[i] = ((T*)m_allocator.data())[i+1];
+	}
 }
 
 /**
