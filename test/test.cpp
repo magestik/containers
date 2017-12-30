@@ -21,6 +21,8 @@ int main()
 		std::cout << e << std::endl;
 	}
 
+	a[0] += 1;
+
 	a.clear();
 
 	Stack<int, HeapAllocator> s;
