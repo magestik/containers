@@ -11,7 +11,7 @@
  * @brief Test Stack implementation
  * @return true in case of success
  */
-static bool test_Stack(void)
+static bool test_Stack_DefaultAllocator(void)
 {
 	Stack<int, DefaultAllocator> s;
 
@@ -32,24 +32,37 @@ static bool test_Stack(void)
 		s.pop();
 	}
 
-	Stack<int, FixedSizeAllocator<int, 6>> f;
+	return(true);
+}
 
-	f.push(10);
-	f.push(0xdead);
-	f.push(0xdead);
-	f.push(0xdead);
-	f.push(0xdead);
-	f.push(0xdead);
+/**
+ * @brief Test Stack implementation
+ * @return true in case of success
+ */
+static bool test_Stack_FixedSizeAllocator(void)
+{
+	Stack<int, FixedSizeLinearAllocator<int, 6>> s;
+
+	s.push(10);
+	s.push(0xdead);
+	s.push(0xdead);
+	s.push(0xdead);
+	s.push(0xdead);
+	s.push(0xdead);
 
 	return(true);
 }
 
 int main()
 {
-	if (!test_Stack())
+	if (!test_Stack_DefaultAllocator())
 	{
 		return(-1);
 	}
 
+	if (!test_Stack_FixedSizeAllocator())
+	{
+		return(-1);
+	}
 	return 0;
 }

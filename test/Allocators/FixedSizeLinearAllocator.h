@@ -25,16 +25,16 @@
 #endif // ASSERT
 
 template<typename T, unsigned int S>
-class FixedSizeAllocator
+class FixedSizeLinearAllocator
 {
 public:
 
-        FixedSizeAllocator(void)
+        FixedSizeLinearAllocator(void)
 	{
 		// ...
 	}
 
-        ~FixedSizeAllocator(void)
+	~FixedSizeLinearAllocator(void)
 	{
 		// ...
 	}
