@@ -1,4 +1,6 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
+
+set(CMAKE_CXX_STANDARD 11)
 
 include(CheckCCompilerFlag)
 
@@ -8,11 +10,15 @@ if (HAVE_FLAG_SANITIZE_ADDRESS)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
 endif (HAVE_FLAG_SANITIZE_ADDRESS)
 
-file(GLOB_RECURSE HEADERS ../include/*.h ../include/*.inl)
+add_executable(test_Array test_Array.cpp Allocators.h)
+target_link_libraries(test_Array PRIVATE containers)
 
-add_executable(simple_test test.cpp ${HEADERS})
+add_executable(test_List test_List.cpp Allocators.h)
+target_link_libraries(test_List PRIVATE containers)
 
-target_link_libraries(simple_test PRIVATE containers)
+add_executable(test_Stack test_Stack.cpp Allocators.h)
+target_link_libraries(test_Stack PRIVATE containers)
 
-set_property(TARGET simple_test PROPERTY CXX_STANDARD 11)
-
+add_test(NAME Array COMMAND $<TARGET_FILE:test_Array>)
+add_test(NAME List COMMAND $<TARGET_FILE:test_List>)
+add_test(NAME Stack COMMAND $<TARGET_FILE:test_Stack>)

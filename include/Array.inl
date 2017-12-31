@@ -23,7 +23,7 @@
  * Default constructor
  */
 template<typename T, class Allocator>
-inline Array<T, Allocator>::Array(void) : m_allocator(), m_count(0)
+inline Array<T, Allocator>::Array(void) : m_allocator(), m_pData(nullptr), m_count(0)
 {
 	// ...
 }
@@ -32,7 +32,7 @@ inline Array<T, Allocator>::Array(void) : m_allocator(), m_count(0)
  * Pointer-copy constructor
  */
 template<typename T, class Allocator>
-inline Array<T, Allocator>::Array(T * data, unsigned int size) : m_allocator(data, size), m_count(size)
+inline Array<T, Allocator>::Array(T * data, unsigned int size) : m_allocator(data, size), m_pData(nullptr), m_count(size)
 {
 	ASSERT(nullptr != data, "data is null");
 }
@@ -43,7 +43,7 @@ inline Array<T, Allocator>::Array(T * data, unsigned int size) : m_allocator(dat
 template<typename T, class Allocator>
 inline Array<T, Allocator>::~Array(void)
 {
-	// ...
+	clear();
 }
 
 /**
@@ -53,9 +53,9 @@ template<typename T, class Allocator>
 inline void Array<T, Allocator>::add(const T & elmt)
 {
 	unsigned int count = m_count++;
-	bool result = m_allocator.require(m_count * sizeof(T));
-	ASSERT(result, "allocation failed");
-	((T*)m_allocator.data())[count] = elmt;
+	m_pData = (T*)m_allocator.resize(m_pData, m_count * sizeof(T));
+	ASSERT(m_pData != nullptr, "allocation failed");
+	m_pData[count] = elmt;
 }
 
 template<typename T, class Allocator>
@@ -78,14 +78,13 @@ inline void Array<T, Allocator>::removeElementAtIndex(unsigned int n)
 {
 	ASSERT(m_count > 0, "the array is empty");
 	ASSERT(n < m_count, "index out of bounds");
-	unsigned int count = --m_count;
-	bool result = m_allocator.require(m_count * sizeof(T));
-	ASSERT(result, "allocation failed");
-	~(((T*)m_allocator.data())[n]);
-	for (int i = n; i < count; ++i)
+	--m_count;
+	for (int i = n; i < m_count; ++i)
 	{
-		((T*)m_allocator.data())[i] = ((T*)m_allocator.data())[i+1];
+		m_pData[i] = m_pData[i+1];
 	}
+	m_pData = (T*)m_allocator.resize(m_pData, m_count * sizeof(T));
+	ASSERT(m_pData != nullptr, "allocation failed");
 }
 
 /**
@@ -95,7 +94,7 @@ template<typename T, class Allocator>
 inline const T & Array<T, Allocator>::operator [] (unsigned int n) const
 {
 	ASSERT(n < m_count, "index out of bounds");
-	return(((T*)m_allocator.data())[n]);
+	return(m_pData[n]);
 }
 
 /**
@@ -105,7 +104,7 @@ template<typename T, class Allocator>
 inline T & Array<T, Allocator>::operator [] (unsigned int n)
 {
 	ASSERT(n < m_count, "index out of bounds");
-	return(((T*)m_allocator.data())[n]);
+	return(m_pData[n]);
 }
 
 /**
@@ -133,5 +132,6 @@ template<typename T, class Allocator>
 inline void Array<T, Allocator>::clear(void)
 {
 	m_count = 0;
-	m_allocator.clear();
+	m_allocator.release(m_pData);
+	m_pData = nullptr;
 }

@@ -38,6 +38,9 @@ public:
 	const T &	top			(void) const;
 	T &			top			(void);
 
+	// Remove methods
+	void            clear   (void);
+
 	// Size accessors
 	bool			empty	(void) const;
 	unsigned int	count	(void) const;
@@ -45,6 +48,7 @@ public:
 private:
 
 	Allocator		m_allocator;
+	T *				m_pData;	// continuous memory block
 	unsigned int	m_count;	// number of element
 
 };

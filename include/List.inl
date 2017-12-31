@@ -22,8 +22,8 @@
 /**
  * Default constructor
  */
-template<typename T>
-inline List<T>::List(void) : m_pFirst(nullptr), m_pLast(nullptr), m_count(0)
+template<typename T, typename Allocator>
+inline List<T, Allocator>::List(void) : m_pFirst(nullptr), m_pLast(nullptr), m_count(0)
 {
 	// ...
 }
@@ -31,8 +31,8 @@ inline List<T>::List(void) : m_pFirst(nullptr), m_pLast(nullptr), m_count(0)
 /**
  * Copy constructor
  */
-template<typename T>
-inline List<T>::List(const List<T> & list) : m_pFirst(nullptr), m_pLast(nullptr), m_count(0)
+template<typename T, typename Allocator>
+inline List<T, Allocator>::List(const List<T, Allocator> & list) : m_pFirst(nullptr), m_pLast(nullptr), m_count(0)
 {
 	m_count = _copyList(list, &m_pFirst, &m_pLast);
 }
@@ -40,8 +40,8 @@ inline List<T>::List(const List<T> & list) : m_pFirst(nullptr), m_pLast(nullptr)
 /**
  * Destructor
  */
-template<typename T>
-inline List<T>::~List(void)
+template<typename T, typename Allocator>
+inline List<T, Allocator>::~List(void)
 {
 	clear();
 }
@@ -49,8 +49,8 @@ inline List<T>::~List(void)
 /**
  * Assignement operator
  */
-template<typename T>
-List<T> & List<T>::operator = (const List<T> & list)
+template<typename T, typename Allocator>
+List<T, Allocator> & List<T, Allocator>::operator = (const List<T, Allocator> & list)
 {
 	clear();
 	m_count = _copyList(list, &m_pFirst, &m_pLast);
@@ -60,8 +60,8 @@ List<T> & List<T>::operator = (const List<T> & list)
 /**
  * Add Head
  */
-template<typename T>
-inline void List<T>::insertAtHead(const T & elmt)
+template<typename T, typename Allocator>
+inline void List<T, Allocator>::insertAtHead(const T & elmt)
 {
 	if (0 == m_count)
 	{
@@ -69,7 +69,7 @@ inline void List<T>::insertAtHead(const T & elmt)
 		return;
 	}
 
-	sNode * pNode = new sNode(elmt);
+	sNode * pNode = new (m_allocator.allocate(sizeof(sNode))) sNode(elmt);
 	pNode->next = m_pFirst; // create link to next element
 	m_pFirst = pNode;
 
@@ -79,8 +79,8 @@ inline void List<T>::insertAtHead(const T & elmt)
 /**
  * Add Tail
  */
-template<typename T>
-inline void List<T>::insertAtTail(const T & elmt)
+template<typename T, typename Allocator>
+inline void List<T, Allocator>::insertAtTail(const T & elmt)
 {
 	if (0 == m_count)
 	{
@@ -88,7 +88,7 @@ inline void List<T>::insertAtTail(const T & elmt)
 		return;
 	}
 
-	sNode * pNode = new sNode(elmt);
+	sNode * pNode = new (m_allocator.allocate(sizeof(sNode))) sNode(elmt);
 	m_pLast->next = pNode; // create link from previous element
 	m_pLast = pNode;
 
@@ -100,8 +100,8 @@ inline void List<T>::insertAtTail(const T & elmt)
  * Call "addHead" when index == 0   because we need to update m_pFirst
  * Call "addTail" when index == end because we need to update m_pLast
  */
-template<typename T>
-inline void List<T>::insertAtIndex(const T & elmt, unsigned int index)
+template<typename T, typename Allocator>
+inline void List<T, Allocator>::insertAtIndex(const T & elmt, unsigned int index)
 {
 	ASSERT(m_count >= index, "index out of bounds");
 
@@ -125,7 +125,7 @@ inline void List<T>::insertAtIndex(const T & elmt, unsigned int index)
 
 	sNode * pPreviousNode = _access(index - 1);
 
-	sNode * pNode = new sNode(elmt);
+	sNode * pNode = new (m_allocator.allocate(sizeof(sNode))) sNode(elmt);
 
 	pNode->next = pPreviousNode->next; // create link to next element
 	pPreviousNode->next = pNode; // create link from previous element
@@ -136,8 +136,8 @@ inline void List<T>::insertAtIndex(const T & elmt, unsigned int index)
 /**
  * Remove Head element
  */
-template<typename T>
-inline void List<T>::removeFromHead(void)
+template<typename T, typename Allocator>
+inline void List<T, Allocator>::removeFromHead(void)
 {
 	ASSERT(m_count > 0, "the list is already empty");
 
@@ -149,7 +149,7 @@ inline void List<T>::removeFromHead(void)
 
 	sNode * pNodeToDelete = m_pFirst;
 	m_pFirst = pNodeToDelete->next;
-	delete pNodeToDelete;
+	m_allocator.release(pNodeToDelete);
 
 	--m_count;
 }
@@ -157,8 +157,8 @@ inline void List<T>::removeFromHead(void)
 /**
  * Remove Tail element
  */
-template<typename T>
-inline void List<T>::removeFromTail(void)
+template<typename T, typename Allocator>
+inline void List<T, Allocator>::removeFromTail(void)
 {
 	ASSERT(m_count > 0, "the list is already empty");
 
@@ -171,7 +171,7 @@ inline void List<T>::removeFromTail(void)
 	sNode * pNodeToDelete = m_pLast;
 	m_pLast = _access(m_count - 2); // get last-but-one element
 	m_pLast->next = nullptr;
-	delete pNodeToDelete;
+	m_allocator.release(pNodeToDelete);
 
 	--m_count;
 }
@@ -181,8 +181,8 @@ inline void List<T>::removeFromTail(void)
  * Call "removeHead" when index == 0   because we need to update m_pFirst
  * Call "removeTail" when index == end because we need to update m_pLast
  */
-template<typename T>
-inline void List<T>::removeFromIndex(unsigned int index)
+template<typename T, typename Allocator>
+inline void List<T, Allocator>::removeFromIndex(unsigned int index)
 {
 	ASSERT(m_count > index, "the list is already empty");
 
@@ -208,7 +208,7 @@ inline void List<T>::removeFromIndex(unsigned int index)
 
 	sNode * pNodeToDelete = pPreviousNode->next;
 	pPreviousNode->next = pNodeToDelete->next;
-	delete pNodeToDelete;
+	m_allocator.release(pNodeToDelete);
 
 	--m_count;
 }
@@ -216,8 +216,8 @@ inline void List<T>::removeFromIndex(unsigned int index)
 /**
  * Remove all elements in the list
  */
-template<typename T>
-inline void List<T>::clear(void)
+template<typename T, typename Allocator>
+inline void List<T, Allocator>::clear(void)
 {
 	while (!empty())
 	{
@@ -228,8 +228,8 @@ inline void List<T>::clear(void)
 /**
  * Add all elements of a List in Head
  */
-template<typename T>
-inline void List<T>::appendToHead(const List<T> & list)
+template<typename T, typename Allocator>
+inline void List<T, Allocator>::appendToHead(const List<T, Allocator> & list)
 {
 	if (list.m_count > 0)
 	{
@@ -247,8 +247,8 @@ inline void List<T>::appendToHead(const List<T> & list)
 /**
  * Add all elements of a List in Tail
  */
-template<typename T>
-inline void List<T>::appendToTail(const List<T> & list)
+template<typename T, typename Allocator>
+inline void List<T, Allocator>::appendToTail(const List<T, Allocator> & list)
 {
 	if (list.m_count > 0)
 	{
@@ -266,8 +266,8 @@ inline void List<T>::appendToTail(const List<T> & list)
 /**
  * Test whether list is empty
  */
-template<typename T>
-inline bool List<T>::empty(void) const
+template<typename T, typename Allocator>
+inline bool List<T, Allocator>::empty(void) const
 {
 	return(0 == m_count);
 }
@@ -275,8 +275,8 @@ inline bool List<T>::empty(void) const
 /**
  * Return the number of element in the list
  */
-template<typename T>
-inline unsigned int List<T>::count(void) const
+template<typename T, typename Allocator>
+inline unsigned int List<T, Allocator>::count(void) const
 {
 	return(m_count);
 }
@@ -284,8 +284,8 @@ inline unsigned int List<T>::count(void) const
 /**
  * Acces first element
  */
-template<typename T>
-inline T & List<T>::head(void)
+template<typename T, typename Allocator>
+inline T & List<T, Allocator>::head(void)
 {
 	return(m_pFirst->data);
 }
@@ -293,8 +293,8 @@ inline T & List<T>::head(void)
 /**
  * Acces first element
  */
-template<typename T>
-inline const T & List<T>::head(void) const
+template<typename T, typename Allocator>
+inline const T & List<T, Allocator>::head(void) const
 {
 	return(m_pFirst->data);
 }
@@ -302,8 +302,8 @@ inline const T & List<T>::head(void) const
 /**
  * Acces last element
  */
-template<typename T>
-inline T & List<T>::tail(void)
+template<typename T, typename Allocator>
+inline T & List<T, Allocator>::tail(void)
 {
 	return(m_pLast->data);
 }
@@ -311,8 +311,8 @@ inline T & List<T>::tail(void)
 /**
  * Acces last element
  */
-template<typename T>
-inline const T & List<T>::tail(void) const
+template<typename T, typename Allocator>
+inline const T & List<T, Allocator>::tail(void) const
 {
 	return(m_pLast->data);
 }
@@ -321,8 +321,8 @@ inline const T & List<T>::tail(void) const
  * Acces any element in the list
  * Not optimized to loop through the list !
  */
-template<typename T>
-inline T & List<T>::operator [] (unsigned int index)
+template<typename T, typename Allocator>
+inline T & List<T, Allocator>::operator [] (unsigned int index)
 {
 	ASSERT(m_count > index, "index out of bounds");
 
@@ -335,8 +335,8 @@ inline T & List<T>::operator [] (unsigned int index)
  * Acces any element in the list
  * Not optimized to loop through the list !
  */
-template<typename T>
-inline const T & List<T>::operator [] (unsigned int index) const
+template<typename T, typename Allocator>
+inline const T & List<T, Allocator>::operator [] (unsigned int index) const
 {
 	ASSERT(m_count > index, "index out of bounds");
 
@@ -348,8 +348,8 @@ inline const T & List<T>::operator [] (unsigned int index) const
 /**
  * Access any Node
  */
-template<typename T>
-inline typename List<T>::sNode * List<T>::_access(unsigned int index) const
+template<typename T, typename Allocator>
+inline typename List<T, Allocator>::sNode * List<T, Allocator>::_access(unsigned int index) const
 {
 	sNode * pNode = m_pFirst;
 
@@ -365,12 +365,12 @@ inline typename List<T>::sNode * List<T>::_access(unsigned int index) const
 /**
  * Optimized function to add the first element (when count = 0)
  */
-template<typename T>
-inline void List<T>::_addFirst(const T & elmt)
+template<typename T, typename Allocator>
+inline void List<T, Allocator>::_addFirst(const T & elmt)
 {
 	ASSERT(0 == m_count, "the list is not empty");
 
-	sNode * pNode = new sNode(elmt);
+	sNode * pNode = new (m_allocator.allocate(sizeof(sNode))) sNode(elmt);
 
 	m_pFirst = pNode;
 	m_pLast	 = pNode;
@@ -381,12 +381,12 @@ inline void List<T>::_addFirst(const T & elmt)
 /**
  * Optimized function to remove the last element (when count = 1)
  */
-template<typename T>
-inline void List<T>::_removeLast(void)
+template<typename T, typename Allocator>
+inline void List<T, Allocator>::_removeLast(void)
 {
 	ASSERT(1 == m_count, "the list has more than one element");
 
-	delete m_pFirst;
+	m_allocator.release(m_pFirst);
 
 	m_pFirst = nullptr;
 	m_pLast	 = nullptr;
@@ -397,14 +397,14 @@ inline void List<T>::_removeLast(void)
 /**
  * Copy list and return pointer to the copy of the first and last element
  */
-template<typename T>
-inline unsigned int List<T>::_copyList(const List<T> & list, sNode ** pFirst, sNode ** pLast)
+template<typename T, typename Allocator>
+inline unsigned int List<T, Allocator>::_copyList(const List<T, Allocator> & list, sNode ** pFirst, sNode ** pLast)
 {
 	ASSERT(0 < list.m_count, "the list is empty");
 
 	sNode * pSourceNode = list.m_pFirst;
 
-	*pFirst = new sNode(pSourceNode->data);
+	*pFirst = new (m_allocator.allocate(sizeof(sNode))) sNode(pSourceNode->data);
 	*pLast = *pFirst;
 
 	pSourceNode = pSourceNode->next;
@@ -412,7 +412,7 @@ inline unsigned int List<T>::_copyList(const List<T> & list, sNode ** pFirst, sN
 	for (int i = 1; i < list.m_count; ++i)
 	{
 		// allocate new node
-		sNode * pNode = new sNode(pSourceNode->data);
+		sNode * pNode = new (m_allocator.allocate(sizeof(sNode))) sNode(pSourceNode->data);
 
 		// set the "next" member of the last allocated node
 		(*pLast)->next = pNode;

@@ -59,12 +59,13 @@ public:
 	unsigned int	count			(void) const;
 
 	// Iterators access
-	iterator		begin			(void) { return iterator((T*)m_allocator.data()); }
-	iterator		end				(void) { return iterator((T*)m_allocator.data()+m_count); }
+	iterator		begin			(void) { return iterator(m_pData); }
+	iterator		end				(void) { return iterator(m_pData+m_count); }
 
 private:
 
 	Allocator		m_allocator;
+	T *				m_pData;	// continuous memory block
 	unsigned int	m_count;	// number of element
 
 };

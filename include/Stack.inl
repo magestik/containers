@@ -23,7 +23,7 @@
  * Default constructor
  */
 template<typename T, class Allocator>
-inline Stack<T, Allocator>::Stack(void) : m_allocator(), m_count(0)
+inline Stack<T, Allocator>::Stack(void) : m_allocator(), m_pData(nullptr), m_count(0)
 {
 	// ...
 }
@@ -32,7 +32,7 @@ inline Stack<T, Allocator>::Stack(void) : m_allocator(), m_count(0)
  * Pointer-copy constructor
  */
 template<typename T, class Allocator>
-inline Stack<T, Allocator>::Stack(T * data, unsigned int size) : m_allocator(data, size), m_count(size)
+inline Stack<T, Allocator>::Stack(T * data, unsigned int size) : m_allocator(data, size), m_pData(nullptr), m_count(size)
 {
 	ASSERT(nullptr != data, "data is null");
 }
@@ -43,7 +43,7 @@ inline Stack<T, Allocator>::Stack(T * data, unsigned int size) : m_allocator(dat
 template<typename T, class Allocator>
 inline Stack<T, Allocator>::~Stack(void)
 {
-	// ...
+	clear();
 }
 
 /**
@@ -53,9 +53,9 @@ template<typename T, class Allocator>
 inline void Stack<T, Allocator>::push(const T & elmt)
 {
 	unsigned int count = m_count++;
-	bool result = m_allocator.require(m_count * sizeof(T));
-	ASSERT(result, "allocation failed");
-	((T*)m_allocator.data())[count] = elmt;
+	m_pData = (T*)m_allocator.resize(m_pData, m_count * sizeof(T));
+	ASSERT(m_pData != nullptr, "allocation failed");
+	m_pData[count] = elmt;
 }
 
 /**
@@ -75,7 +75,7 @@ template<typename T, class Allocator>
 inline const T & Stack<T, Allocator>::top(void) const
 {
 	ASSERT(m_count > 0, "the stack is empty");
-	return (m_allocator.data())[m_count-1];
+	return(m_pData[m_count-1]);
 }
 
 /**
@@ -85,7 +85,7 @@ template<typename T, class Allocator>
 inline T & Stack<T, Allocator>::top(void)
 {
 	ASSERT(m_count > 0, "the stack is empty");
-	return ((T*)m_allocator.data())[m_count-1];
+	return(m_pData[m_count-1]);
 }
 
 /**
@@ -104,4 +104,15 @@ template<typename T, class Allocator>
 inline unsigned int Stack<T, Allocator>::count(void) const
 {
 	return(m_count);
+}
+
+/**
+ * Remove all elements
+ */
+template<typename T, class Allocator>
+inline void Stack<T, Allocator>::clear(void)
+{
+	m_count = 0;
+	m_allocator.release(m_pData);
+	m_pData = nullptr;
 }
