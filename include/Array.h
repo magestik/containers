@@ -40,27 +40,26 @@ public:
 				~Array  (void);
 
 	// Add methods
-	void            add             (const T & elmt);
+	void            add						(const T & elmt);
 
 	// Remove methods
 	void            removeFirstElement		(void);
 	void            removeLastElement		(void);
 	void            removeElementAtIndex	(unsigned int index);
 
-	// Element accessors
-	T &				operator []		(unsigned int index);
-	const T &		operator []		(unsigned int index) const;
+	void            clear					(void);
 
-	// Remove methods
-	void            clear           (void);
+	// Element accessors
+	T &				operator []				(unsigned int index);
+	const T &		operator []				(unsigned int index) const;
 
 	// Size accessors
-	bool			empty			(void) const;
-	unsigned int	count			(void) const;
+	bool			empty					(void) const;
+	unsigned int	count					(void) const;
 
 	// Iterators access
-	iterator		begin			(void) { return iterator(m_pData); }
-	iterator		end				(void) { return iterator(m_pData+m_count); }
+	iterator		begin					(void) { return iterator(m_pData); }
+	iterator		end						(void) { return iterator(m_pData+m_count); }
 
 private:
 

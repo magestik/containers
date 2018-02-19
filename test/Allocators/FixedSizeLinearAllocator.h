@@ -29,7 +29,7 @@ class FixedSizeLinearAllocator
 {
 public:
 
-        FixedSizeLinearAllocator(void)
+	FixedSizeLinearAllocator(void)
 	{
 		// ...
 	}
@@ -40,33 +40,33 @@ public:
 	}
 
 	void * allocate(unsigned int size)
-        {
-            if (size > sizeof(T) * S)
-            {
-                return(nullptr);
-            }
+	{
+		if (size > sizeof(T) * S)
+		{
+			return(nullptr);
+		}
 
-            return(m_pData);
+		return(m_pData);
 	}
 
 	void release(void * ptr)
-        {
-            ASSERT(ptr == m_pData, "Bad pointer");
+	{
+		ASSERT(ptr == m_pData, "Bad pointer");
 	}
 
 	void * resize(void * ptr, unsigned int size)
 	{
-            ASSERT(ptr == nullptr || ptr == m_pData, "Bad pointer");
+		ASSERT(ptr == nullptr || ptr == m_pData, "Bad pointer");
 
-            if (size > sizeof(T) * S)
-            {
-                return(nullptr);
-            }
+		if (size > sizeof(T) * S)
+		{
+			return(nullptr);
+		}
 
-            return(m_pData);
+		return(m_pData);
 	}
 
 private:
 
-        T m_pData [S]; // statically-allocated memory
+	T m_pData [S]; // statically-allocated memory
 };
