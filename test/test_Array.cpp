@@ -93,9 +93,16 @@ static bool test_Array_LargeAllocator(void)
 {
 	Array<int, LargeLinearAllocator<512*1024*1024>> a; // max 512 MB
 
-	for (int i = 0; i < 1000000; ++i) // add 1 million elements
+	const int nElements = 1000000; // 1 million elements
+
+	for (int i = 0; i < nElements; ++i)
 	{
 		a.add(i);
+	}
+
+	if (a.empty() || a.count() != nElements)
+	{
+		return(false);
 	}
 
 	if (a[500] != 500)
