@@ -15,7 +15,9 @@
 
 #pragma once
 
-#include <sys/mman.h> // for mmap
+#if __gnu_linux__
+#	include <sys/mman.h> // for mmap
+#endif // __gnu_linux__
 
 #ifndef ASSERT
 #	define ASSERT(exp, msg)
@@ -29,9 +31,9 @@ class LargeLinearAllocator
 {
 public:
 
-        LargeLinearAllocator(void) : m_pMappedMemory(nullptr)
-        {
-            // ...
+	LargeLinearAllocator(void) : m_pMappedMemory(nullptr)
+	{
+		// ...
 	}
 
 	~LargeLinearAllocator(void)
@@ -39,37 +41,42 @@ public:
 	    // ...
 	}
 
-        void * allocate(unsigned int size)
-        {
-	    if (size > MAX)
-	    {
-		return(nullptr);
-	    }
+	void * allocate(unsigned int size)
+	{
+		if (size > MAX)
+		{
+			return(nullptr);
+		}
 
-	    m_pMappedMemory = mmap(nullptr, MAX, PROT_READ|PROT_WRITE, MAP_ANON|MAP_SHARED, -1, 0);
+#if __gnu_linux__
+		m_pMappedMemory = mmap(nullptr, MAX, PROT_READ|PROT_WRITE, MAP_ANON|MAP_SHARED, -1, 0);
+#endif // __gnu_linux__
 
-	    return(m_pMappedMemory);
+		return(m_pMappedMemory);
 	}
 
 	void release(void * ptr)
 	{
-	    munmap(m_pMappedMemory, MAX);
-	    m_pMappedMemory = nullptr;
+#if __gnu_linux__
+		munmap(m_pMappedMemory, MAX);
+#endif // __gnu_linux__
+
+		m_pMappedMemory = nullptr;
 	}
 
 	void * resize(void * ptr, unsigned int size)
 	{
-	    if (size > MAX)
-	    {
-		return(nullptr);
-	    }
+		if (size > MAX)
+		{
+			return(nullptr);
+		}
 
-	    if (ptr == nullptr)
-	    {
-		return(allocate(size));
-	    }
+		if (ptr == nullptr)
+		{
+			return(allocate(size));
+		}
 
-            return(ptr);
+		return(ptr);
 	}
 
 private:
