@@ -1,16 +1,19 @@
 language: cpp
 
-dist: trusty
 sudo: false
 
-compiler:  
-    - gcc
-    - clang
+matrix:
+  include:
+  - os: linux
+    compiler: gcc
+  - os: linux
+    compiler: clang
+  - os: osx
+    compiler: clang
 
 before_script:  
     - mkdir build
     - cd build
     - cmake ..
 
-script: make  
-
+script: cmake --build .
