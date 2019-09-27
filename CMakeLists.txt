@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 
-project(containers)
+project(containers CXX)
 
 enable_testing()
 

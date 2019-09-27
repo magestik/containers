@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.1)
 
 set(CMAKE_CXX_STANDARD 11)
 
-include(CheckCCompilerFlag)
+include(CheckCXXCompilerFlag)
 
-check_c_compiler_flag(-fno-sanitize=address HAVE_FLAG_SANITIZE_ADDRESS)
+check_cxx_compiler_flag(-fno-sanitize=address HAVE_FLAG_SANITIZE_ADDRESS)
 
 if (HAVE_FLAG_SANITIZE_ADDRESS)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
