@@ -1,8 +1,8 @@
 #pragma once
 
-#if __gnu_linux__
+#if __linux__ || __APPLE__
 #	include <sys/mman.h> // for mmap
-#endif // __gnu_linux__
+#endif // __linux__ || __APPLE__
 
 #ifndef ASSERT
 #	define ASSERT(exp, msg)
@@ -33,18 +33,18 @@ public:
 			return(nullptr);
 		}
 
-#if __gnu_linux__
+#if __linux__ || __APPLE__
 		m_pMappedMemory = mmap(nullptr, MAX, PROT_READ|PROT_WRITE, MAP_ANON|MAP_SHARED, -1, 0);
-#endif // __gnu_linux__
+#endif // __linux__ || __APPLE__
 
 		return(m_pMappedMemory);
 	}
 
 	void release(void * ptr)
 	{
-#if __gnu_linux__
+#if __linux__ || __APPLE__
 		munmap(m_pMappedMemory, MAX);
-#endif // __gnu_linux__
+#endif // __linux__ || __APPLE__
 
 		m_pMappedMemory = nullptr;
 	}
