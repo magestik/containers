@@ -4,6 +4,11 @@
 #	include <sys/mman.h> // for mmap
 #endif // __linux__ || __APPLE__
 
+#if _WIN32
+#	define WIN32_LEAN_AND_MEAN
+#	include <windows.h>
+#endif // _WIN32
+
 #ifndef ASSERT
 #	define ASSERT(exp, msg)
 #	define ALLOW_DEBUG 0
@@ -37,6 +42,10 @@ public:
 		m_pMappedMemory = mmap(nullptr, MAX, PROT_READ|PROT_WRITE, MAP_ANON|MAP_SHARED, -1, 0);
 #endif // __linux__ || __APPLE__
 
+#if _WIN32
+		m_pMappedMemory = VirtualAlloc(NULL, MAX, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+#endif // _WIN32
+
 		ASSERT(m_pMappedMemory != nullptr, "memory allocation failed");
 
 		return(m_pMappedMemory);
@@ -49,6 +58,10 @@ public:
 #if __linux__ || __APPLE__
 		munmap(m_pMappedMemory, MAX);
 #endif // __linux__ || __APPLE__
+
+#if _WIN32
+		VirtualFree(ptr, MAX, MEM_RELEASE);
+#endif // _WIN32
 
 		m_pMappedMemory = nullptr;
 	}
