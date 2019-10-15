@@ -16,4 +16,6 @@ before_script:
     - cd build
     - cmake ..
 
-script: cmake --build .
+script:
+    - cmake --build .
+    - ctest -C Debug
