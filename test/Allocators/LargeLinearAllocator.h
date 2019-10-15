@@ -37,11 +37,15 @@ public:
 		m_pMappedMemory = mmap(nullptr, MAX, PROT_READ|PROT_WRITE, MAP_ANON|MAP_SHARED, -1, 0);
 #endif // __linux__ || __APPLE__
 
+		ASSERT(m_pMappedMemory != nullptr, "memory allocation failed");
+
 		return(m_pMappedMemory);
 	}
 
 	void release(void * ptr)
 	{
+		ASSERT(ptr != nullptr, "can't release NULL ptr");
+
 #if __linux__ || __APPLE__
 		munmap(m_pMappedMemory, MAX);
 #endif // __linux__ || __APPLE__
