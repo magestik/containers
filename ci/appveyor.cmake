@@ -23,6 +23,8 @@ set(WITH_COVERAGE FALSE)
 
 find_program(CTEST_GIT_COMMAND NAMES git)
 
+set(CTEST_UPDATE_COMMAND "${CTEST_GIT_COMMAND}")
+
 ctest_start(Continuous)
 
 ctest_update()
