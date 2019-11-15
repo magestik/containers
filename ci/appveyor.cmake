@@ -1,0 +1,37 @@
+set(CTEST_SOURCE_DIRECTORY "$ENV{APPVEYOR_BUILD_FOLDER}")
+set(CTEST_BINARY_DIRECTORY "${CTEST_SOURCE_DIRECTORY}/build")
+
+set(CTEST_SITE "ci.appveyor.com")
+
+set(APPVEYOR_BUILD_WORKER_IMAGE "$ENV{APPVEYOR_BUILD_WORKER_IMAGE}")
+
+if (APPVEYOR_BUILD_WORKER_IMAGE STREQUAL "Visual Studio 2015")
+	set(CTEST_CMAKE_GENERATOR "Visual Studio 14 2015")
+	set(CTEST_BUILD_NAME "windows-vs14-ide")
+endif()
+
+set(CTEST_BUILD_CONFIGURATION "Debug")
+#set(CTEST_BUILD_OPTIONS "")
+
+set(WITH_MEMCHECK FALSE)
+set(WITH_COVERAGE FALSE)
+
+ctest_start(Continuous)
+
+#ctest_update()
+
+ctest_configure()
+
+ctest_build()
+
+ctest_test()
+
+if (WITH_COVERAGE AND CTEST_COVERAGE_COMMAND)
+  ctest_coverage()
+endif (WITH_COVERAGE AND CTEST_COVERAGE_COMMAND)
+
+if (WITH_MEMCHECK AND CTEST_MEMORYCHECK_COMMAND)
+  ctest_memcheck()
+endif (WITH_MEMCHECK AND CTEST_MEMORYCHECK_COMMAND)
+
+ctest_submit()

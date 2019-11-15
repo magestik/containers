@@ -3,12 +3,5 @@ image: Visual Studio 2015
 matrix:
     fast_finish: true
 
-before_build:
-    - mkdir build
-    - cd build
-    - cmake -G "Visual Studio 14 2015" ..
-
-build_script:
-    - cmake --build .
-    - ctest -C Debug
+build_script: ctest -S ci/appveyor.cmake -C Debug
 

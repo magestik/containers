@@ -11,11 +11,4 @@ matrix:
   - os: osx
     compiler: clang
 
-before_script:  
-    - mkdir build
-    - cd build
-    - cmake ..
-
-script:
-    - cmake --build .
-    - ctest -C Debug
+script: ctest -S ci/travis.cmake
