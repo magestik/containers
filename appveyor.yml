@@ -1,7 +1,7 @@
-image: Visual Studio 2015
-
-matrix:
-    fast_finish: true
+image:
+  - Visual Studio 2015
+  - Visual Studio 2017
+  - Visual Studio 2019
 
 build_script: ctest -S ci/appveyor.cmake -C Debug
 

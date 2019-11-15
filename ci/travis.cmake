@@ -11,9 +11,15 @@ set(CTEST_BUILD_CONFIGURATION "Debug")
 set(WITH_MEMCHECK TRUE)
 set(WITH_COVERAGE TRUE)
 
+find_program(CTEST_GIT_COMMAND NAMES git)
+find_program(CTEST_COVERAGE_COMMAND NAMES gcov)
+find_program(CTEST_MEMORYCHECK_COMMAND NAMES valgrind)
+
+set(CTEST_UPDATE_COMMAND "${CTEST_GIT_COMMAND}")
+
 ctest_start(Continuous)
 
-#ctest_update()
+ctest_update()
 
 ctest_configure()
 
