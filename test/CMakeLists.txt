@@ -1,12 +1,19 @@
 cmake_minimum_required(VERSION 3.1)
 
-include(CheckCXXCompilerFlag)
+if (MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3 /WX")
+    if(MSVC_VERSION GREATER 1900)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /permissive-")
+    endif()
+else (MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
+endif (MSVC)
 
-check_cxx_compiler_flag(-fno-sanitize=address HAVE_FLAG_SANITIZE_ADDRESS)
+option(WITH_COVERAGE OFF)
 
-if (HAVE_FLAG_SANITIZE_ADDRESS)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
-endif (HAVE_FLAG_SANITIZE_ADDRESS)
+if (WITH_COVERAGE)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
+endif()
 
 add_executable(test_Array test_Array.cpp Allocators.h)
 target_link_libraries(test_Array PRIVATE containers)
