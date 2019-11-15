@@ -64,7 +64,7 @@ inline void Array<T, Allocator>::removeElementAtIndex(unsigned int n)
 	ASSERT(m_count > 0, "the array is empty");
 	ASSERT(n < m_count, "index out of bounds");
 	--m_count;
-	for (int i = n; i < m_count; ++i)
+	for (unsigned int i = n; i < m_count; ++i)
 	{
 		m_pData[i] = m_pData[i+1];
 	}
