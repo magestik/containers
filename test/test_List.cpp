@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 
+#define ASSERT(assertion, message) EXPECT_TRUE(assertion) << message
 #include "List.h"
 
 #include "Allocators.h"
@@ -14,7 +15,7 @@ TEST(List, DefaultAllocator)
 	List<int, DefaultAllocator> l;
 
 	EXPECT_TRUE(l.empty());
-	EXPECT_TRUE(l.count() > 0);
+	EXPECT_GT(l.count(), 0u);
 
 	l.insertAtHead(1);
 	l.insertAtHead(2);
