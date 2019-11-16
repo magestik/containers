@@ -1,5 +1,4 @@
-#include <assert.h>
-#define ASSERT(exp, msg) assert(exp)
+#include "gtest/gtest.h"
 
 #include "Array.h"
 
@@ -9,43 +8,26 @@
 
 /**
  * @brief Test Array implementation
- * @return true in case of success
  */
-static bool test_Array_DefaultAllocator(void)
+TEST(Array, DefaultAllocator)
 {
 	Array<int, DefaultAllocator> a;
 
-	if (!a.empty() || a.count() != 0)
-	{
-		std::cerr << "Array is not empty" << std::endl;
-		return(false);
-	}
+	EXPECT_TRUE(a.empty());
+	EXPECT_GT(a.count(), 0);
 
 	a.add(12);
 
-	if (a.empty() || a.count() != 1)
-	{
-		std::cerr << "Array does not contain the expected number of element(s)" << std::endl;
-		return(false);
-	}
-	else if (a[0] != 12)
-	{
-		std::cerr << "Array does not contain the expected value(s)" << std::endl;
-		return(false);
-	}
+	EXPECT_FALSE(a.empty());
+	EXPECT_EQ(a.count(), 1);
+	EXPECT_EQ(a[0], 12);
 
 	a.add(15);
 
-	if (a.empty() || a.count() != 2)
-	{
-		std::cerr << "Array does not contain the expected number of element(s)" << std::endl;
-		return(false);
-	}
-	else if (a[0] != 12 || a[1] != 15)
-	{
-		std::cerr << "Array does not contain the expected value(s)" << std::endl;
-		return(false);
-	}
+	EXPECT_FALSE(a.empty());
+	EXPECT_EQ(a.count(), 1);
+	EXPECT_EQ(a[0], 12);
+	EXPECT_EQ(a[1], 15);
 
 	for (int e : a)
 	{
@@ -54,44 +36,32 @@ static bool test_Array_DefaultAllocator(void)
 
 	a[0] += 1;
 
-	if (a[0] != 13 || a[1] != 15)
-	{
-		std::cerr << "Array does not contain the expected value(s)" << std::endl;
-		return(false);
-	}
+	EXPECT_EQ(a[0], 13);
+	EXPECT_EQ(a[1], 15);
 
 	a.add(2);
 	a.removeElementAtIndex(1);
 
-	if (a.empty() || a.count() != 2)
-	{
-		std::cerr << "Array does not contain the expected number of element(s)" << std::endl;
-		return(false);
-	}
-	else if (a[0] != 13 || a[1] != 2)
-	{
-		std::cerr << "Array does not contain the expected value(s)" << std::endl;
-		return(false);
-	}
+	EXPECT_FALSE(a.empty());
+	EXPECT_EQ(a.count(), 2);
+	EXPECT_EQ(a[0], 13);
+	EXPECT_EQ(a[1], 2);
 
 	a.clear();
 
-	if (!a.empty() || a.count() != 0)
-	{
-		std::cerr << "Array does not contain the expected number of element(s)" << std::endl;
-		return(false);
-	}
-
-	return(true);
+	EXPECT_TRUE(a.empty());
+	EXPECT_GT(a.count(), 0);
 }
 
 /**
  * @brief Test Array implementation
- * @return true in case of success
  */
-static bool test_Array_LargeAllocator(void)
+TEST(Array, LargeAllocator)
 {
 	Array<int, LargeLinearAllocator<512*1024*1024>> a; // max 512 MB
+
+	EXPECT_TRUE(a.empty());
+	EXPECT_GT(a.count(), 0);
 
 	const int nElements = 1000000; // 1 million elements
 
@@ -100,46 +70,11 @@ static bool test_Array_LargeAllocator(void)
 		a.add(i);
 	}
 
-	if (a.empty() || a.count() != nElements)
-	{
-		return(false);
-	}
+	EXPECT_FALSE(a.empty());
+	EXPECT_EQ(a.count(), nElements);
 
-	if (a[500] != 500)
-	{
-		std::cerr << "Array does not contain the expected value(s)" << std::endl;
-		return(false);
-	}
-	else if (a[4444] != 4444)
-	{
-		std::cerr << "Array does not contain the expected value(s)" << std::endl;
-		return(false);
-	}
-	else if (a[105632] != 105632)
-	{
-		std::cerr << "Array does not contain the expected value(s)" << std::endl;
-		return(false);
-	}
-	else if (a[999999] != 999999)
-	{
-		std::cerr << "Array does not contain the expected value(s)" << std::endl;
-		return(false);
-	}
-
-	return(true);
-}
-
-int main()
-{
-	if (!test_Array_DefaultAllocator())
-	{
-		return(-1);
-	}
-
-	if (!test_Array_LargeAllocator())
-	{
-		return(-1);
-	}
-
-	return 0;
+	EXPECT_EQ(a[500], 500);
+	EXPECT_EQ(a[4444], 4444);
+	EXPECT_EQ(a[105632], 105632);
+	EXPECT_EQ(a[999999], 999999);
 }

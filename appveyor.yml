@@ -3,5 +3,20 @@ image:
   - Visual Studio 2017
   - Visual Studio 2019
 
+environment:
+  GTEST_ROOT: '%APPDATA%/googletest'
+
+install:
+  - cmd: git clone --single-branch --branch v1.8.x https://github.com/google/googletest.git
+  - cmd: cd googletest
+  - cmd: mkdir build
+  - cmd: cd build
+  - cmd: cmake -DBUILD_GMOCK=FALSE -DCMAKE_INSTALL_PREFIX=%GTEST_ROOT% -Dgtest_force_shared_crt=ON ..
+  - cmd: cmake --build . --config Debug
+  - cmd: cmake --build . --config Debug --target install
+  - cmd: cmake --build . --config Release
+  - cmd: cmake --build . --config Release --target install
+  - cmd: cd %APPVEYOR_BUILD_FOLDER%
+
 build_script: ctest -S ci/appveyor.cmake -C Debug
 

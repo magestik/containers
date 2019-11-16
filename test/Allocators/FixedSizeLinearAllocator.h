@@ -37,11 +37,13 @@ public:
 	void release(void * ptr)
 	{
 		ASSERT(ptr == m_pData, "Bad pointer");
+		(void)ptr;
 	}
 
 	void * resize(void * ptr, unsigned int size)
 	{
 		ASSERT(ptr == nullptr || ptr == m_pData, "Bad pointer");
+		(void)ptr;
 
 		if (size > sizeof(T) * S)
 		{

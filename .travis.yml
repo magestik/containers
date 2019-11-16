@@ -1,5 +1,18 @@
 language: cpp
 
+env:
+    - GTest_ROOT=$HOME/googletest
+
+before_install:
+  - git clone --single-branch --branch v1.8.x https://github.com/google/googletest.git
+  - cd googletest
+  - mkdir build
+  - cd build
+  - cmake -DBUILD_GMOCK=FALSE -DCMAKE_INSTALL_PREFIX=$GTest_ROOT ..
+  - cmake --build .
+  - cmake --build . --target install
+  - cd $TRAVIS_BUILD_DIR
+
 matrix:
   include:
   - os: linux
@@ -8,5 +21,6 @@ matrix:
     compiler: clang
   - os: osx
     compiler: clang
+    osx_image: xcode10
 
 script: ctest -S ci/travis.cmake

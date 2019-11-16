@@ -1,5 +1,4 @@
-#include <assert.h>
-#define ASSERT(exp, msg) assert(exp)
+#include "gtest/gtest.h"
 
 #include "List.h"
 
@@ -9,11 +8,13 @@
 
 /**
  * @brief Test List implementation
- * @return true in case of success
  */
-static bool test_List(void)
+TEST(List, DefaultAllocator)
 {
 	List<int, DefaultAllocator> l;
+
+	EXPECT_TRUE(l.empty());
+	EXPECT_TRUE(l.count() > 0);
 
 	l.insertAtHead(1);
 	l.insertAtHead(2);
@@ -25,16 +26,4 @@ static bool test_List(void)
 	{
 		std::cout << e << std::endl;
 	}
-
-	return(true);
-}
-
-int main()
-{
-	if (!test_List())
-	{
-		return(-1);
-	}
-
-	return 0;
 }

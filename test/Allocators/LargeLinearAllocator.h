@@ -56,6 +56,7 @@ public:
 		ASSERT(ptr != nullptr, "can't release NULL ptr");
 
 #if __linux__ || __APPLE__
+		(void)ptr;
 		munmap(m_pMappedMemory, MAX);
 #endif // __linux__ || __APPLE__
 
