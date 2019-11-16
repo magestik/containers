@@ -15,7 +15,7 @@ TEST(List, DefaultAllocator)
 	List<int, DefaultAllocator> l;
 
 	EXPECT_TRUE(l.empty());
-	EXPECT_GT(l.count(), 0u);
+	EXPECT_EQ(l.count(), 0u);
 
 	l.insertAtHead(1);
 	l.insertAtHead(2);

@@ -15,7 +15,7 @@ TEST(Stack, DefaultAllocator)
 	Stack<int, DefaultAllocator> s;
 
 	EXPECT_TRUE(s.empty());
-	EXPECT_GT(s.count(), 0u);
+	EXPECT_EQ(s.count(), 0u);
 
 	s.push(10);
 	s.push(42);
@@ -37,7 +37,7 @@ TEST(Stack, FixedSizeAllocator)
 	Stack<int, FixedSizeLinearAllocator<int, 6>> s;
 
 	EXPECT_TRUE(s.empty());
-	EXPECT_GT(s.count(), 0u);
+	EXPECT_EQ(s.count(), 0u);
 
 	s.push(10);
 	s.push(0xdead);

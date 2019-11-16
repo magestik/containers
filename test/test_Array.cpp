@@ -15,7 +15,7 @@ TEST(Array, DefaultAllocator)
 	Array<int, DefaultAllocator> a;
 
 	EXPECT_TRUE(a.empty());
-	EXPECT_GT(a.count(), 0u);
+	EXPECT_EQ(a.count(), 0u);
 
 	a.add(12);
 
@@ -51,7 +51,7 @@ TEST(Array, DefaultAllocator)
 	a.clear();
 
 	EXPECT_TRUE(a.empty());
-	EXPECT_GT(a.count(), 0);
+	EXPECT_EQ(a.count(), 0);
 }
 
 /**
@@ -62,7 +62,7 @@ TEST(Array, LargeAllocator)
 	Array<int, LargeLinearAllocator<512*1024*1024>> a; // max 512 MB
 
 	EXPECT_TRUE(a.empty());
-	EXPECT_GT(a.count(), 0u);
+	EXPECT_EQ(a.count(), 0u);
 
 	constexpr int nElements = 1000000; // 1 million elements
 
