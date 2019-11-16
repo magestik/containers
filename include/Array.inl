@@ -46,7 +46,7 @@ inline void Array<T, Allocator>::add(const T & elmt)
 template<typename T, class Allocator>
 inline void Array<T, Allocator>::removeFirstElement(void)
 {
-	removeElementAtIndex(0);
+	removeElementAtIndex(0u);
 }
 
 template<typename T, class Allocator>
@@ -61,7 +61,7 @@ inline void Array<T, Allocator>::removeLastElement(void)
 template<typename T, class Allocator>
 inline void Array<T, Allocator>::removeElementAtIndex(unsigned int n)
 {
-	ASSERT(m_count > 0, "the array is empty");
+	ASSERT(m_count > 0u, "the array is empty");
 	ASSERT(n < m_count, "index out of bounds");
 	--m_count;
 	for (unsigned int i = n; i < m_count; ++i)
@@ -98,7 +98,7 @@ inline T & Array<T, Allocator>::operator [] (unsigned int n)
 template<typename T, class Allocator>
 inline bool Array<T, Allocator>::empty(void) const
 {
-	return(0 == m_count);
+	return(0u == m_count);
 }
 
 /**
@@ -116,7 +116,7 @@ inline unsigned int Array<T, Allocator>::count(void) const
 template<typename T, class Allocator>
 inline void Array<T, Allocator>::clear(void)
 {
-	m_count = 0;
+	m_count = 0u;
 	m_allocator.release(m_pData);
 	m_pData = nullptr;
 }
