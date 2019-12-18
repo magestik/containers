@@ -3,6 +3,9 @@ set(CTEST_BINARY_DIRECTORY "${CTEST_SOURCE_DIRECTORY}/build")
 
 set(CTEST_SITE "ci.appveyor.com")
 
+set(CTEST_BUILD_OPTIONS "")
+set(CTEST_BUILD_CONFIGURATION "Debug")
+
 set(APPVEYOR_BUILD_WORKER_IMAGE "$ENV{APPVEYOR_BUILD_WORKER_IMAGE}")
 
 if (APPVEYOR_BUILD_WORKER_IMAGE STREQUAL "Visual Studio 2015")
@@ -16,33 +19,7 @@ elseif (APPVEYOR_BUILD_WORKER_IMAGE STREQUAL "Visual Studio 2019")
 	set(CTEST_BUILD_NAME "windows-vs16-ide")
 endif()
 
-set(CTEST_BUILD_OPTIONS "")
-
-set(CTEST_BUILD_CONFIGURATION "Debug")
-
 set(WITH_MEMCHECK FALSE)
 set(WITH_COVERAGE FALSE)
 
-find_program(CTEST_GIT_COMMAND NAMES git)
-
-set(CTEST_UPDATE_COMMAND "${CTEST_GIT_COMMAND}")
-
-ctest_start(Continuous)
-
-ctest_update()
-
-ctest_configure(OPTIONS "${CTEST_BUILD_OPTIONS}")
-
-ctest_build()
-
-ctest_test()
-
-if (WITH_COVERAGE AND CTEST_COVERAGE_COMMAND)
-  ctest_coverage()
-endif (WITH_COVERAGE AND CTEST_COVERAGE_COMMAND)
-
-if (WITH_MEMCHECK AND CTEST_MEMORYCHECK_COMMAND)
-  ctest_memcheck()
-endif (WITH_MEMCHECK AND CTEST_MEMORYCHECK_COMMAND)
-
-ctest_submit()
+include(${CTEST_SCRIPT_DIRECTORY}/common.cmake)

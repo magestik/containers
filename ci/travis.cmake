@@ -2,10 +2,26 @@ set(CTEST_SOURCE_DIRECTORY "$ENV{TRAVIS_BUILD_DIR}")
 set(CTEST_BINARY_DIRECTORY "${CTEST_SOURCE_DIRECTORY}/build")
 
 set(CTEST_SITE "travis-ci.com")
-set(CTEST_BUILD_NAME "$ENV{TRAVIS_OS_NAME}-$ENV{TRAVIS_COMPILER}-default")
 
-set(CTEST_CMAKE_GENERATOR "Unix Makefiles")
+set(CTEST_BUILD_OPTIONS "")
 set(CTEST_BUILD_CONFIGURATION "Debug")
+
+if (CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux")
+
+	set(CTEST_BUILD_NAME "linux-$ENV{TRAVIS_COMPILER}-default")
+	set(CTEST_CMAKE_GENERATOR "Unix Makefiles")
+
+elseif (CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
+
+	set(CTEST_BUILD_NAME "osx-xcode-ide")
+	set(CTEST_CMAKE_GENERATOR "Xcode")
+
+elseif (CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows")
+
+	set(CTEST_CMAKE_GENERATOR "Visual Studio 16 2019")
+	set(CTEST_BUILD_NAME "windows-vs16-ide")
+
+endif()
 
 set(WITH_MEMCHECK TRUE)
 
@@ -18,28 +34,4 @@ else()
 	set(WITH_COVERAGE FALSE)
 endif()
 
-find_program(CTEST_GIT_COMMAND NAMES git)
-find_program(CTEST_COVERAGE_COMMAND NAMES gcov)
-find_program(CTEST_MEMORYCHECK_COMMAND NAMES valgrind)
-
-set(CTEST_UPDATE_COMMAND "${CTEST_GIT_COMMAND}")
-
-ctest_start(Continuous)
-
-ctest_update()
-
-ctest_configure(OPTIONS "${CTEST_BUILD_OPTIONS}")
-
-ctest_build()
-
-ctest_test()
-
-if (WITH_COVERAGE AND CTEST_COVERAGE_COMMAND)
-  ctest_coverage()
-endif (WITH_COVERAGE AND CTEST_COVERAGE_COMMAND)
-
-if (WITH_MEMCHECK AND CTEST_MEMORYCHECK_COMMAND)
-  ctest_memcheck()
-endif (WITH_MEMCHECK AND CTEST_MEMORYCHECK_COMMAND)
-
-ctest_submit()
+include(${CTEST_SCRIPT_DIRECTORY}/common.cmake)
