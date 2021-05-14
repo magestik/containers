@@ -51,7 +51,7 @@ TEST(Array, DefaultAllocator)
 	a.clear();
 
 	EXPECT_TRUE(a.empty());
-	EXPECT_EQ(a.count(), 0);
+	EXPECT_EQ(a.count(), 0u);
 }
 
 /**
