@@ -15,7 +15,9 @@ if (WITH_COVERAGE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
 endif()
 
-find_package(GTest REQUIRED)
+if (NOT TARGET GTest::GTest OR NOT TARGET GTest::Main)
+    find_package(GTest REQUIRED)
+endif()
 
 add_executable(test_Array test_Array.cpp Allocators.h)
 target_link_libraries(test_Array PRIVATE containers)
